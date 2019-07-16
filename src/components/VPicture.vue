@@ -23,9 +23,8 @@
         <button class="btn btn--block" @click="crop">Crop</button>
       </div>
     </Modal>
-    <!-- <pre>{{ image }}</pre> -->
     <div>
-      <img class="crop-preview" v-if="croppedImage" :src="croppedImage">
+      <img class="crop-preview" v-if="imageUrl" :src="imageUrl">
     </div>
   </div>
 </template>
@@ -33,6 +32,7 @@
 <script>
 import ImageUploadButton from "./ImageUploadButton";
 import Modal from "./Modal";
+import Uploader from './../helpers/imageUploader.js';
 
 export default {
   name: "VPicture",
@@ -51,12 +51,15 @@ export default {
       validator: value => ["square", "circle"].includes(value)
     }
   },
+  created () {
+    this.imageUploader = new Uploader()
+  },
   data() {
     return {
       image: null,
       croppedImage: null,
       showModal: false,
-      zoom: 0.5
+      imageUrl: null
     };
   },
   computed: {
@@ -70,6 +73,18 @@ export default {
         this.openModal();
         this.bindImage();
       }
+    },
+    croppedImage(blod) {
+      const vm = this
+
+      this.imageUploader.upload(blod).then(location => {
+        vm.imageUrl = location
+      }).catch(error => {
+        vm.showError()
+      })
+    },
+    imageUrl(url) {
+      console.log(url);
     }
   },
   methods: {
@@ -82,7 +97,7 @@ export default {
     crop() {
       const { width, height } = this;
       const options = {
-        // type: "blob",
+        type: "blob",
         format: "png",
         size: {
           width,
@@ -120,7 +135,11 @@ export default {
         height: heightViewport,
         type: this.viewportType
       };
-    }
+    },
+    showError(msg) {
+      // Global error message
+      return displayTopMessage && displayTopMessage(msg, "error")
+    } 
   },
   components: {
     ImageUploadButton,
