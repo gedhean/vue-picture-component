@@ -87,6 +87,7 @@ export default {
         vm.imageUrl = location
       }).catch(error => {
         displayMessage(this.t('upload-error'), 'error')
+        console.error(error);
       })
     }
   },

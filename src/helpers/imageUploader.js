@@ -68,8 +68,9 @@ class ImageUploader {
         function(err, data) {
           if (err) {
             reject(err)
+          } else {
+            resolve(data.Location)
           }
-          resolve(data.Location)
         }
       )
     })
