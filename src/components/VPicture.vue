@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <ImageUploadButton v-model="image"/>
-    <button v-if="image" class="btn" @click="openModal">Edit</button>
+    <ImageUploadButton v-model="image" :locale="locale"/>
+    <button v-if="image" class="btn" @click="openModal">{{t('edit')}}</button>
     <Modal v-show="showModal" @close="closeModal">
       <div slot="body" class="cropper-wrapper">
         <VueCroppie
@@ -17,10 +17,10 @@
       </div>
       <div slot="footer" class="actions">
         <div class="rotate-buttons">
-          <a href="#" class="btn button__image-rotate" @click.prevent="rotate(-90)">Rotate Left</a>
-          <a href="#" class="btn button__image-rotate" @click.prevent="rotate(90)">Rotate Right</a>
+          <a href="#" class="btn button__image-rotate" @click.prevent="rotate(-90)">{{t('rotate-left')}}</a>
+          <a href="#" class="btn button__image-rotate" @click.prevent="rotate(90)">{{t('rotate-right')}}</a>
         </div>
-        <button class="btn btn--block" @click="crop">Crop</button>
+        <button class="btn btn--block" @click="crop">{{t('crop')}}</button>
       </div>
     </Modal>
     <div>
@@ -32,10 +32,13 @@
 <script>
 import ImageUploadButton from "./ImageUploadButton";
 import Modal from "./Modal";
-import Uploader from './../helpers/imageUploader.js';
+import { displayMessage } from '@/helpers/utils.js';
+import Uploader from '@/helpers/imageUploader.js';
+import translable from '@/mixins/translable.js';
 
 export default {
   name: "VPicture",
+  mixins: [translable],
   props: {
     width: {
       type: [String, Number],
@@ -49,7 +52,8 @@ export default {
       type: String,
       default: "square",
       validator: value => ["square", "circle"].includes(value)
-    }
+    },
+    locale:  String,
   },
   created () {
     this.imageUploader = new Uploader()

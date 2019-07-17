@@ -8,6 +8,8 @@ Vue.config.productionTip = false;
 
 Vue.use(VueCroppie);
 
+window.locale = 'pt-BR'
+
 new Vue({
   render: h => h(VPicture)
 }).$mount("#app");
