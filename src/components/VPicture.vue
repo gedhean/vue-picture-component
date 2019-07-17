@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <ImageUploadButton v-model="image" :locale="locale"/>
-    <button v-if="image" class="btn" @click="openModal">{{t('edit')}}</button>
+    <div class="btn-wrapper">
+      <ImageUploadButton v-model="image" :locale="locale"/>
+      <button v-if="croppedImage && image" class="btn" @click="openModal">{{t('edit')}}</button>
+    </div>
     <Modal v-show="showModal" @close="closeModal">
       <div slot="body" class="cropper-wrapper">
         <VueCroppie
@@ -84,11 +86,8 @@ export default {
       this.imageUploader.upload(blod).then(location => {
         vm.imageUrl = location
       }).catch(error => {
-        vm.showError()
+        displayMessage(this.t('upload-error'), 'error')
       })
-    },
-    imageUrl(url) {
-      console.log(url);
     }
   },
   methods: {
@@ -139,10 +138,6 @@ export default {
         height: heightViewport,
         type: this.viewportType
       };
-    },
-    showError(msg) {
-      // Global error message
-      return displayTopMessage && displayTopMessage(msg, "error")
     } 
   },
   components: {
@@ -210,5 +205,10 @@ a.btn {
   display: block;
   width: 100%;
   text-align: center;
+}
+
+.btn-wrapper {
+  display: flex;
+  justify-content: space-around;
 }
 </style>
